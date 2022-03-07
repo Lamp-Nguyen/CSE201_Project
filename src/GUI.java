@@ -1,3 +1,8 @@
+/**
+*	Group 17
+* Last Updated: 3/7/2022
+* This is the main GUI of our CSE 201 Project.
+*/
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -78,6 +83,7 @@ public class GUI implements ActionListener {
 		if(clear.isEnabled()) {
 			userText.setText("");
 			passText.setText("");
+			complete.setText("");
 		}
 	}
 }
