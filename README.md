@@ -1,7 +1,5 @@
 # CSE 201 Project
 
-========
-
 This project will let the user interact with a catalog focused on businesses.
 
 ## Features
