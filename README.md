@@ -12,8 +12,6 @@ This project will let the user interact with a catalog focused on businesses.
 - Sort/filter businesses
 - Rate/review businesses
 
-## Installation
-
 ## Contribute
 
 - Issue Tracker: https://github.com/Lamp-Nguyen/CSE201_Project/issues
