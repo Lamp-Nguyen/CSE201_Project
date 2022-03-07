@@ -1,5 +1,5 @@
 /**
-*	Group 17
+* Group 17
 * Last Updated: 3/7/2022
 * This is the main GUI of our CSE 201 Project.
 */
