@@ -1,41 +1,20 @@
 # CSE 201 Project
+
 ========
 
-$project will solve your problem of where to start with documentation,
-by providing a basic explanation of how to do it easily.
+This project will let the user interact with a catalog focused on businesses.
 
-Look how easy it is to use:
+## Features
 
-    import project
-    # Get your stuff done
-    project.do_stuff()
+- Add businesses
+- Remove businesses
+- Modify businesses
+- Sort/filter businesses
+- Rate/review businesses
 
-Features
---------
+## Installation
 
-- Be awesome
-- Make things faster
+## Contribute
 
-Installation
-------------
-
-Install $project by running:
-
-    install project
-
-Contribute
-----------
-
-- Issue Tracker: github.com/$project/$project/issues
-- Source Code: github.com/$project/$project
-
-Support
--------
-
-If you are having issues, please let us know.
-We have a mailing list located at: project@google-groups.com
-
-License
--------
-
-The project is licensed under the BSD license.
+- Issue Tracker: https://github.com/Lamp-Nguyen/CSE201_Project/issues
+- Source Code: https://github.com/Lamp-Nguyen/CSE201_Project
