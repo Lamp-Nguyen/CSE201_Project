@@ -66,9 +66,17 @@ public class GUI {
 
 		panel.add(scroll);
     	
-		try {
-			
-		} catch (Exception e){
+		File file = new File("PROJECT_MOCK_DATA.txt");
+		String line;
+		try{
+			Scanner sc = new Scanner(file);
+			while(sc.hasNext()){
+				line = sc.nextLine();
+				display.append(line+"\n");
+			}
+			sc.close();
+
+		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 
@@ -78,7 +86,7 @@ public class GUI {
 		complete = new JLabel("");
 		complete.setBounds(130, 150, 300, 25);
 		panel.add(complete);
-
+		
 		//========================================== Login button
 		login = new JButton("Login");
 		login.setBounds(130, 120, 80, 25);
