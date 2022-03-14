@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 public class Tester {
 	
-	private static Sort<Business> businesses = new Sort<>();
+	//private static Sort<Business> businesses = new Sort<>();
 	private static ArrayList<Business> aLBusinesses = new ArrayList<>();
 
 	public static void main(String[] args) throws Exception {
@@ -18,7 +18,7 @@ public class Tester {
 
 		//Loading data from file
 		LoadData();
-		Collections.sort(aLBusinesses);
+		//Collections.sort(aLBusinesses);
 		
 
 
@@ -28,9 +28,9 @@ public class Tester {
 		try( Scanner fin = new Scanner(new File("Data.txt")) ) {
 			fin.nextLine();
 			while(fin.hasNextLine()){
-				Business b = new Business(fin.nextLine());
-				businesses.add(b);
-				aLBusinesses.add(b);
+				//Business b = new Business(fin.nextLine());
+				//businesses.add(b);
+				//aLBusinesses.add(b);
 			}
 			
 		} catch (Exception e) {
