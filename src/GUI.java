@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -21,12 +22,14 @@ public class GUI implements ActionListener {
 	private static JButton login;
 	private static JLabel complete;
 	private static JButton clear;
+	private static JTextField searchText;
+	private static JButton search;
 	
 	public static void main(String[] args) {
 		
 		JFrame frame = new JFrame();
 		JPanel panel = new JPanel();
-		frame.setSize(400, 250);
+		frame.setSize(400, 500);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.add(panel);
 		panel.setLayout(null);
@@ -48,6 +51,9 @@ public class GUI implements ActionListener {
 		passText = new JTextField();
 		passText.setBounds(130, 70, 165, 25);
 		panel.add(passText);
+
+		//========================================== All data text field
+
 		
 		//========================================== Login button
 		login = new JButton("Login");
@@ -64,10 +70,33 @@ public class GUI implements ActionListener {
 		clear.setBounds(210, 120, 80, 25);
 		clear.addActionListener(new GUI());
 		panel.add(clear);
-		
+
+		//========================================== Search Button
+		search = new JButton("Search");
+		search.setBounds(300, 170, 80, 25);
+		search.addActionListener(new GUI());
+		panel.add(search);
+
+		//========================================== Categories and Search Box
+		String[] options = {"Category", "Name", "Date", "Rating", "Expense", "Type", "Owner", "Number"};
+		JComboBox<String> category = new JComboBox<>(options);
+		category.setBounds(20, 170, 110, 25);
+		panel.add(category);
+
+		searchText = new JTextField("Search");
+		searchText.setBounds(130, 169, 168, 25);
+		panel.add(searchText);
+
+
+
+
+
 		frame.setVisible(true);
+
 	}
 	
+
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		//========================================== login/clear button action listener
