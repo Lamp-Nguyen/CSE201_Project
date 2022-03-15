@@ -17,6 +17,17 @@ public class Business {
 	private String owner;
 	private String number;
 	
+	public Business(String inputString) throws Exception {
+		String[] arr = inputString.split("\t");
+		this.name = arr[0];
+		this.date = dateFormat.parse(arr[1]);
+		this.rating = Integer.valueOf(arr[2]);
+		this.expense = arr[3];
+		this.type = arr[4];
+		this.owner = arr[5];
+		this.number = arr[6];
+	}
+	
 	public Business(String name, String date, int rating, String expense, String type, String owner, String number) throws Exception {
 		this.name = name;
 		this.date = dateFormat.parse(date);
@@ -85,6 +96,7 @@ public class Business {
 
 	@Override
 	public String toString() {
-		return String.format("%s, %s, %d, %s, %s, %s, %s", name, dateFormat.format(date), rating, expense, type, owner, number);
+		return String.format("%s\t%s\t%d\t%s\t%s\t%s\t%s",
+				name, dateFormat.format(date), rating, expense, type, owner, number);
 	}
 }

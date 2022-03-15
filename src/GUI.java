@@ -5,6 +5,12 @@
 */
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Scanner;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -15,6 +21,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.text.DefaultCaret;
 
 public class GUI {
 	
@@ -30,8 +37,73 @@ public class GUI {
 	private static JTextArea display;
 	private static JScrollPane scroll;
 
-	public static void main(String[] args) {
+	public static ArrayList<Business> search(ArrayList<Business> arr, String searchStr) {
+		ArrayList<Business> ret = new ArrayList<Business>();
+		for (Business b : arr) {
+			if (b.getName().toLowerCase().contains(searchStr.toLowerCase()) || 
+					b.getOwner().toLowerCase().contains(searchStr.toLowerCase())) {
+				ret.add(b);
+			}
+		}
+		return ret;
+	}
+	
+	public static void defaultSort(ArrayList<Business> arr, boolean reverse) {
+		Collections.sort(arr, new Comparator<Business>() {
+			@Override
+			public int compare(Business o1, Business o2) {
+				if (!reverse) {
+					return o1.getName().compareTo(o2.getName());
+				} else {
+					return o2.getName().compareTo(o1.getName());
+				}
+			}
+		});
+	}
+	
+	public static void dateSort(ArrayList<Business> arr, boolean reverse) {
+		Collections.sort(arr, new Comparator<Business>() {
+			@Override
+			public int compare(Business o1, Business o2) {
+				if (!reverse) {
+					return o2.getDate().compareTo(o1.getDate());
+				} else {
+					return o2.getDate().compareTo(o1.getDate());
+				}
+			}
+		});
+	}
+	
+	public static void ratingSort(ArrayList<Business> arr, boolean reverse) {
+		Collections.sort(arr, new Comparator<Business>() {
+			@Override
+			public int compare(Business o1, Business o2) {
+				if (!reverse) {
+					return o2.getRating() - o1.getRating();
+				} else {
+					return o1.getRating() - o2.getRating();
+				}
+			}
+		});
+	}
+	
+	public static void ownerSort(ArrayList<Business> arr, boolean reverse) {
+		Collections.sort(arr, new Comparator<Business>() {
+			@Override
+			public int compare(Business o1, Business o2) {
+				if (!reverse) {
+					return o1.getOwner().compareTo(o2.getOwner());
+				} else {
+					return o2.getOwner().compareTo(o1.getOwner());
+				}
+			}
+		});
+	}
+	
+	public static void main(String[] args) throws Exception {
 
+		ArrayList<Business> catalog = new ArrayList<Business>();
+		
 		JFrame frame = new JFrame();
 		JPanel panel = new JPanel();
 		frame.setSize(400, 500);
@@ -59,28 +131,31 @@ public class GUI {
 
 		//========================================== All data text field
 		display = new JTextArea();
+		DefaultCaret caret = (DefaultCaret)display.getCaret();
+		caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
 		display.setEditable(false);
 		scroll = new JScrollPane(display, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-		display.setBounds(25, 210, 350, 250); 
+		display.setBounds(25, 210, 350, 250);
 		scroll.setBounds(25, 210, 350, 250);
 
 		panel.add(scroll);
     	
-		File file = new File("PROJECT_MOCK_DATA.txt");
+		File file = new File("Mock_data.txt");
 		String line;
+		Business tmp;
 		try{
 			Scanner sc = new Scanner(file);
 			while(sc.hasNext()){
 				line = sc.nextLine();
-				display.append(line+"\n");
+				tmp = new Business(line);
+				catalog.add(tmp);
+				display.append(tmp + "\n");
 			}
 			sc.close();
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-
-
 		
 		//========================================== Complete Label
 		complete = new JLabel("");
@@ -121,25 +196,48 @@ public class GUI {
 		search.setBounds(300, 170, 80, 25);
 		search.addActionListener(new ActionListener() { 
 			public void actionPerformed(ActionEvent e) {
-				String search = searchText.getText();
-
+				String searchStr = searchText.getText();
+				ArrayList<Business> result = search(catalog, searchStr);
+				display.selectAll();
+				display.setText("");
+				if (result.isEmpty()) {
+					display.append("No such record in catalog");
+				} else {
+					for (Business b : result)
+						display.append(b + "\n");
+				}
 			} 
 		  } );
 		panel.add(search);
 
 		//========================================== Categories and Search Box
-		String[] options = {"Category", "Name", "Date", "Rating", "Expense", "Type", "Owner", "Number"};
+		String[] options = {"Name", "Date", "Rating", "Owner"};
 		JComboBox<String> category = new JComboBox<>(options);
+		category.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String sortCat = (String) category.getSelectedItem();
+				if (sortCat.equals("Name"))
+					defaultSort(catalog, false);
+				else if (sortCat.equals("Date"))
+					dateSort(catalog, false);
+				else if (sortCat.equals("Rating"))
+					ratingSort(catalog, false);
+				else if (sortCat.equals("Owner"))
+					ownerSort(catalog, false);
+				display.selectAll();
+				display.setText("");
+				for (Business b : catalog)
+					display.append(b + "\n");
+			}
+			
+		});
 		category.setBounds(20, 170, 110, 25);
 		panel.add(category);
 
-		searchText = new JTextField("Search");
+		searchText = new JTextField("");
 		searchText.setBounds(130, 169, 168, 25);
 		panel.add(searchText);
-
-
-
-
 
 		frame.setVisible(true);
 	}
