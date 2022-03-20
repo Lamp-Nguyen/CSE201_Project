@@ -106,27 +106,27 @@ public class GUI {
 		
 		JFrame frame = new JFrame();
 		JPanel panel = new JPanel();
-		frame.setSize(400, 500);
+		frame.setSize(600, 700);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.add(panel);
 		panel.setLayout(null);
 		
 		//========================================== User name text and field
 		userName = new JLabel("Username: ");
-		userName.setBounds(50, 20, 80, 25);
+		userName.setBounds(150, 20, 80, 25);
 		panel.add(userName);
 		
 		userText = new JTextField(20);
-		userText.setBounds(130, 20, 165, 25);
+		userText.setBounds(230, 20, 165, 25);
 		panel.add(userText);
 		
 		//========================================== Password text and field
 		password = new JLabel("Password: ");
-		password.setBounds(50, 70, 80, 25);
+		password.setBounds(150, 70, 80, 25);
 		panel.add(password);
 		
 		passText = new JPasswordField();
-		passText.setBounds(130, 70, 165, 25);
+		passText.setBounds(230, 70, 165, 25);
 		panel.add(passText);
 
 		//========================================== All data text field
@@ -135,8 +135,8 @@ public class GUI {
 		caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
 		display.setEditable(false);
 		scroll = new JScrollPane(display, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-		display.setBounds(25, 210, 350, 250);
-		scroll.setBounds(25, 210, 350, 250);
+		display.setBounds(100, 260, 400, 280);
+		scroll.setBounds(100, 260, 400, 280);
 
 		panel.add(scroll);
     	
@@ -146,10 +146,11 @@ public class GUI {
 		try{
 			Scanner sc = new Scanner(file);
 			while(sc.hasNext()){
-				line = sc.nextLine();
+				line = sc.nextLine().trim();
 				tmp = new Business(line);
 				catalog.add(tmp);
-				display.append(tmp + "\n");
+				display.append(tmp.toString());
+				display.append("\n");
 			}
 			sc.close();
 
@@ -159,12 +160,12 @@ public class GUI {
 		
 		//========================================== Complete Label
 		complete = new JLabel("");
-		complete.setBounds(130, 150, 300, 25);
+		complete.setBounds(230, 150, 300, 25);
 		panel.add(complete);
 		
 		//========================================== Login button
 		login = new JButton("Login");
-		login.setBounds(130, 120, 80, 25);
+		login.setBounds(230, 120, 80, 25);
 		login.addActionListener(new ActionListener() { 
 			public void actionPerformed(ActionEvent e) { 
 			  	String user = userText.getText();
@@ -181,7 +182,7 @@ public class GUI {
 		
 		//========================================== Clear button
 		clear = new JButton("Clear");
-		clear.setBounds(210, 120, 80, 25);
+		clear.setBounds(310, 120, 80, 25);
 		clear.addActionListener(new ActionListener() { 
 			public void actionPerformed(ActionEvent e) {
 				userText.setText("");
@@ -193,7 +194,7 @@ public class GUI {
 
 		//========================================== Search Button
 		search = new JButton("Search");
-		search.setBounds(300, 170, 80, 25);
+		search.setBounds(420, 170, 80, 25);
 		search.addActionListener(new ActionListener() { 
 			public void actionPerformed(ActionEvent e) {
 				String searchStr = searchText.getText();
@@ -232,11 +233,11 @@ public class GUI {
 			}
 			
 		});
-		category.setBounds(20, 170, 110, 25);
+		category.setBounds(100, 190, 110, 25);
 		panel.add(category);
 
 		searchText = new JTextField("");
-		searchText.setBounds(130, 169, 168, 25);
+		searchText.setBounds(230, 189, 168, 25);
 		panel.add(searchText);
 
 		frame.setVisible(true);
