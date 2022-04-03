@@ -350,4 +350,11 @@ public class GUI extends JFrame implements ActionListener {
 				+ "  -  " + tmp.getNumber());
 		entry.add(businessContact);
 	}
+	
+	public static void main(String[] args) {
+		GUI app = new GUI();
+		app.setSize(1024, 768);
+		app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		app.setVisible(true);
+	}
 }
