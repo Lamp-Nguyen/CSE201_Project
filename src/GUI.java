@@ -23,11 +23,10 @@ public class GUI extends JFrame implements ActionListener {
 
 	private ArrayList<Business> catalogRecords = new ArrayList<Business>();
 	private ArrayList<Business> workingArr = catalogRecords;
-	private ArrayList<JPanel> catalog = new ArrayList<JPanel>();
 	private JPanel mainPanel, functionPanel, userPanel, sortPanel, catalogPanel, catalogContainer;
 	private JScrollPane catalogScroll;
 	private JLabel sortLabel, searchLabel;
-	private JComboBox sortReverse;
+	private JComboBox<String> sortReverse;
 	private JButton searchButton, loginButton, signupButton;
 	private JRadioButton nameButton, dateButton, ratingButton, ownerButton;
 	private ButtonGroup sortButtons;
@@ -152,7 +151,7 @@ public class GUI extends JFrame implements ActionListener {
 		gc.gridy = 1;
 		sortPanel.add(ownerButton, gc);
 		
-		sortReverse = new JComboBox();
+		sortReverse = new JComboBox<String>();
 		sortReverse.setActionCommand("Reverse");
 		sortReverse.addItem("Ascending");
 		sortReverse.addItem("Descending");
@@ -330,7 +329,7 @@ public class GUI extends JFrame implements ActionListener {
 		Business tmp = arr.get(index);
 		
 		JLabel businessName = new JLabel(tmp.getName());
-		businessName.setFont(new Font("Arial", Font.BOLD, 20));
+		businessName.setFont(new Font("Arial", Font.BOLD, 15));
 		entry.add(businessName);
 		entry.add(new JLabel(""));
 				
@@ -350,12 +349,5 @@ public class GUI extends JFrame implements ActionListener {
 		JLabel businessContact = new JLabel("Contact information:  "  + tmp.getOwner()
 				+ "  -  " + tmp.getNumber());
 		entry.add(businessContact);
-	}
-	
-	public static void main(String[] args) {
-		GUI app = new GUI();
-		app.setSize(1024, 768);
-		app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		app.setVisible(true);
 	}
 }
