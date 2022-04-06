@@ -7,13 +7,10 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Scanner;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -22,16 +19,17 @@ import javax.swing.border.TitledBorder;
 public class GUI extends JFrame implements ActionListener {
 
 	private ArrayList<Business> catalogRecords = new ArrayList<Business>();
-	private ArrayList<Business> workingArr = catalogRecords;
+	private ArrayList<Business> workingArr;
 	private JPanel mainPanel, functionPanel, userPanel, sortPanel, catalogPanel, catalogContainer;
 	private JScrollPane catalogScroll;
 	private JLabel sortLabel, searchLabel;
 	private JComboBox<String> sortReverse;
-	private JButton searchButton, loginButton, signupButton;
+	private JButton searchButton, loginButton, signupButton, addButton;
 	private JRadioButton nameButton, dateButton, ratingButton, ownerButton;
 	private ButtonGroup sortButtons;
 	private JTextField searchText;
 	private GridBagConstraints gc;
+	private ConnectionManager cm;
 	
 	public GUI() {
 		mainPanel = new JPanel(new BorderLayout());
@@ -52,7 +50,6 @@ public class GUI extends JFrame implements ActionListener {
 		gc.weighty = 7;
 		gc.gridx = 0;
 		gc.gridy = 0;
-		gc.gridwidth = functionPanel.getWidth();
 		userPanel.add(loginButton, gc);
 
 		signupButton = new JButton("Sign up");
@@ -62,7 +59,6 @@ public class GUI extends JFrame implements ActionListener {
 		gc.weighty = 7;
 		gc.gridx = 0;
 		gc.gridy = 1;
-		gc.gridwidth = functionPanel.getWidth();
 		userPanel.add(signupButton, gc);
 		
 		// First row
@@ -171,11 +167,16 @@ public class GUI extends JFrame implements ActionListener {
 		gc.gridy = 6;
 		functionPanel.add(sortPanel, gc);
 		
-		try {
-			loadData("Mock_data.txt");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		addButton = new JButton("Add Business");
+		addButton.addActionListener(this);
+		gc = new GridBagConstraints();
+		gc.insets = new Insets(0, 0, 100, 4);
+		gc.weighty = 20;
+		gc.gridx = 0;
+		gc.gridy = 8;
+		functionPanel.add(addButton, gc);
+
+		loadData();
 		
 		catalogContainer = new JPanel();
 		catalogContainer.setLayout(new BoxLayout(catalogContainer, BoxLayout.PAGE_AXIS));
@@ -186,9 +187,8 @@ public class GUI extends JFrame implements ActionListener {
 		catalogPanel.revalidate();
 		
 		add(mainPanel);
-	}
+	}	
 	
-
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals("Search")) {
@@ -202,6 +202,11 @@ public class GUI extends JFrame implements ActionListener {
 			} else {
 				loadBusinesses(workingArr, catalogContainer);
 			}
+		} else if (e.getActionCommand().equals("Add Business")) {
+			AddBusinessFrame tmp = new AddBusinessFrame();
+			tmp.setSize(640, 400);
+			tmp.setLocationRelativeTo(null);
+			tmp.setVisible(true);
 		} else if (sortButtons.getSelection().getActionCommand() != null){
 			String cmd = sortButtons.getSelection().getActionCommand();
 			boolean reversed = false;
@@ -226,6 +231,18 @@ public class GUI extends JFrame implements ActionListener {
 		}
 		
 		catalogPanel.revalidate();
+	}
+	
+	public void loadData() {
+		try {
+			cm = new ConnectionManager();
+			catalogRecords = cm.getData();
+			workingArr = catalogRecords;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			cm.closeConnection();
+		}
 	}
 	
 	public ArrayList<Business> search(ArrayList<Business> arr, String searchStr) {
@@ -293,29 +310,11 @@ public class GUI extends JFrame implements ActionListener {
 		});
 	}
 	
-	public void loadData(String fileName) throws Exception {
-		File file = new File(fileName);
-		String line;
-		Business tmp;
-		try {
-			Scanner sc = new Scanner(file);
-			while (sc.hasNext()) {
-				line = sc.nextLine().trim();
-				tmp = new Business(line);
-				catalogRecords.add(tmp);
-			}
-			sc.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-	}
-	
 	public void loadBusinesses(ArrayList<Business> arr, JPanel container) {
 		for (int i = 0; i < arr.size(); i++) {
 			JPanel toAdd = new JPanel();
 			formatPanel(toAdd, arr, i);
 			toAdd.revalidate();
-			//catalog.add(toAdd);
 			container.add(toAdd);
 			container.add(Box.createRigidArea(new Dimension(10, 10)));
 		}
@@ -354,6 +353,7 @@ public class GUI extends JFrame implements ActionListener {
 	public static void main(String[] args) {
 		GUI app = new GUI();
 		app.setSize(1024, 768);
+		app.setLocationRelativeTo(null);
 		app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		app.setVisible(true);
 	}
