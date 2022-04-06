@@ -1,4 +1,3 @@
-name	date_established	rating	expense	type	owner	phone_number
 "Jakubowski, Schulist and Stiedemann"	1/28/1961	4	moderately expensive	Restaurant	Amaleta Poveleye	408-832-4848
 "Flatley, Collier and Bailey"	10/9/2020	4	inexpensive	Restaurant	Jervis Klemke	719-819-9061
 Schiller LLC	3/29/1963	2	moderately expensive	Restaurant	Casie Jiranek	871-628-2423
