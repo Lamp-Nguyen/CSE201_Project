@@ -96,7 +96,7 @@ public class Business {
 
 	@Override
 	public String toString() {
-		return String.format("%-50s\t%s\t%-10d%-20s\t%-10s\t%-30s%s",
+		return String.format("%s\t%s\t%d\t%s\t%s\t%s\t%s",
 				name, dateFormat.format(date), rating, expense, type, owner, number);
 	}
 }

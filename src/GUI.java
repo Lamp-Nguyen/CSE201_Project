@@ -19,7 +19,6 @@ import javax.swing.border.TitledBorder;
 public class GUI extends JFrame implements ActionListener {
 
 	private ArrayList<Business> catalogRecords = new ArrayList<Business>();
-	private ArrayList<Business> workingArr;
 	private JPanel mainPanel, functionPanel, userPanel, sortPanel, catalogPanel, catalogContainer;
 	private JScrollPane catalogScroll;
 	private JLabel sortLabel, searchLabel;
@@ -28,6 +27,7 @@ public class GUI extends JFrame implements ActionListener {
 	private JRadioButton nameButton, dateButton, ratingButton, ownerButton;
 	private ButtonGroup sortButtons;
 	private JTextField searchText;
+	private CatalogContainer container;
 	private GridBagConstraints gc;
 	private ConnectionManager cm;
 	
@@ -61,7 +61,6 @@ public class GUI extends JFrame implements ActionListener {
 		gc.gridy = 1;
 		userPanel.add(signupButton, gc);
 		
-		// First row
 		gc = new GridBagConstraints();
 		gc.ipady = 70;
 		gc.ipadx = 200;
@@ -69,7 +68,6 @@ public class GUI extends JFrame implements ActionListener {
 		gc.gridy = 0;
 		functionPanel.add(userPanel, gc);
 		
-		// Second row
 		searchLabel = new JLabel("Type business's name or owner's name: ");
 		gc = new GridBagConstraints();
 		gc.anchor = GridBagConstraints.FIRST_LINE_START;
@@ -79,7 +77,6 @@ public class GUI extends JFrame implements ActionListener {
 		gc.gridy = 2;
 		functionPanel.add(searchLabel, gc);
 		
-		// Third row
 		searchText = new JTextField("", 30);
 		gc = new GridBagConstraints();
 		gc.weighty = 1;
@@ -87,7 +84,6 @@ public class GUI extends JFrame implements ActionListener {
 		gc.gridy = 3;
 		functionPanel.add(searchText, gc);
 		
-		// Fourth Row
 		searchButton = new JButton("Search");
 		gc = new GridBagConstraints();
 		gc.anchor = GridBagConstraints.PAGE_START;
@@ -98,7 +94,6 @@ public class GUI extends JFrame implements ActionListener {
 		searchButton.addActionListener(this);
 		functionPanel.add(searchButton, gc);
 		
-		// Fifth row
 		sortLabel = new JLabel("Sort by: ");
 		gc = new GridBagConstraints();
 		gc.anchor = GridBagConstraints.FIRST_LINE_START;
@@ -108,7 +103,6 @@ public class GUI extends JFrame implements ActionListener {
 		gc.gridy = 5;
 		functionPanel.add(sortLabel, gc);
 		
-		// Sixth row
 		nameButton = new JRadioButton("Name");
 		nameButton.setActionCommand("Name");
 		nameButton.addActionListener(this);
@@ -178,12 +172,11 @@ public class GUI extends JFrame implements ActionListener {
 
 		loadData();
 		
-		catalogContainer = new JPanel();
-		catalogContainer.setLayout(new BoxLayout(catalogContainer, BoxLayout.PAGE_AXIS));
-		catalogScroll = new JScrollPane(catalogContainer);
+		container = new CatalogContainer();
+		catalogScroll = new JScrollPane(container);
 		catalogScroll.getVerticalScrollBar().setUnitIncrement(20);
 		catalogPanel.add(catalogScroll, BorderLayout.CENTER);
-		loadBusinesses(catalogRecords, catalogContainer);
+		container.loadBusinesses(catalogRecords);
 		catalogPanel.revalidate();
 		
 		add(mainPanel);
@@ -193,17 +186,17 @@ public class GUI extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals("Search")) {
 			String searchStr = searchText.getText().trim();
-			workingArr = search(catalogRecords, searchStr);
-			catalogContainer.removeAll();
-			if (workingArr.isEmpty()) {
+			catalogRecords = search(searchStr);
+			container.refresh();
+			if (catalogRecords.isEmpty()) {
 				JLabel tmp = new JLabel("No such record in catalog!");
 				tmp.setFont(new Font("Arial", Font.BOLD, 20));
-				catalogContainer.add(tmp);
+				container.add(tmp);
 			} else {
-				loadBusinesses(workingArr, catalogContainer);
+				container.loadBusinesses(catalogRecords);
 			}
 		} else if (e.getActionCommand().equals("Add Business")) {
-			AddBusinessFrame tmp = new AddBusinessFrame();
+			AddBusinessFrame tmp = new AddBusinessFrame(catalogRecords, container);
 			tmp.setSize(640, 400);
 			tmp.setLocationRelativeTo(null);
 			tmp.setVisible(true);
@@ -212,21 +205,17 @@ public class GUI extends JFrame implements ActionListener {
 			boolean reversed = false;
 			if (sortReverse.getSelectedItem().equals("Descending")) reversed = true;
 			if (cmd.equals("Name")) {
-				nameSort(workingArr, reversed);
-				catalogContainer.removeAll();
-				loadBusinesses(workingArr, catalogContainer);
+				nameSort(catalogRecords, reversed);
+				container.loadBusinesses(catalogRecords);
 			} else if (cmd.equals("Date")) {
-				defaultSort(workingArr, reversed);
-				catalogContainer.removeAll();
-				loadBusinesses(workingArr, catalogContainer);
+				dateSort(catalogRecords, reversed);
+				container.loadBusinesses(catalogRecords);
 			} else if (cmd.equals("Rating")) {
-				ratingSort(workingArr, reversed);
-				catalogContainer.removeAll();
-				loadBusinesses(workingArr, catalogContainer);
+				ratingSort(catalogRecords, reversed);
+				container.loadBusinesses(catalogRecords);
 			} else if (cmd.equals("Owner")) {
-				ownerSort(workingArr, reversed);
-				catalogContainer.removeAll();
-				loadBusinesses(workingArr, catalogContainer);
+				ownerSort(catalogRecords, reversed);
+				container.loadBusinesses(catalogRecords);
 			}
 		}
 		
@@ -237,7 +226,6 @@ public class GUI extends JFrame implements ActionListener {
 		try {
 			cm = new ConnectionManager();
 			catalogRecords = cm.getData();
-			workingArr = catalogRecords;
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -245,25 +233,25 @@ public class GUI extends JFrame implements ActionListener {
 		}
 	}
 	
-	public ArrayList<Business> search(ArrayList<Business> arr, String searchStr) {
+	public ArrayList<Business> search(String searchStr) {
 		ArrayList<Business> ret = new ArrayList<Business>();
-		for (Business b : arr) {
-			if (b.getName().toLowerCase().contains(searchStr.toLowerCase()) || 
-					b.getOwner().toLowerCase().contains(searchStr.toLowerCase())) {
-				ret.add(b);
-			}
+		try {
+			cm = new ConnectionManager();
+			ret = cm.dbSearch(searchStr);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return ret;
 	}
 	
-	public void defaultSort(ArrayList<Business> arr, boolean reverse) {
+	public void dateSort(ArrayList<Business> arr, boolean reverse) {
 		Collections.sort(arr, new Comparator<Business>() {
 			@Override
 			public int compare(Business o1, Business o2) {
 				if (!reverse) {
-					return o2.getDate().compareTo(o1.getDate());
-				} else {
 					return o1.getDate().compareTo(o2.getDate());
+				} else {
+					return o2.getDate().compareTo(o1.getDate());
 				}
 			}
 		});
@@ -308,53 +296,5 @@ public class GUI extends JFrame implements ActionListener {
 				}
 			}
 		});
-	}
-	
-	public void loadBusinesses(ArrayList<Business> arr, JPanel container) {
-		for (int i = 0; i < arr.size(); i++) {
-			JPanel toAdd = new JPanel();
-			formatPanel(toAdd, arr, i);
-			toAdd.revalidate();
-			container.add(toAdd);
-			container.add(Box.createRigidArea(new Dimension(10, 10)));
-		}
-	}
-	
-	public void formatPanel(JPanel entry, ArrayList<Business> arr, int index) {
-		entry.setLayout(new GridLayout(4, 2));
-		entry.setBorder(new LineBorder(Color.black));
-		entry.setPreferredSize(new Dimension(650, 200));
-		entry.setMaximumSize(entry.getPreferredSize());
-		Business tmp = arr.get(index);
-		
-		JLabel businessName = new JLabel(tmp.getName());
-		businessName.setFont(new Font("Arial", Font.BOLD, 15));
-		entry.add(businessName);
-		entry.add(new JLabel(""));
-				
-		JLabel businessType = new JLabel("Type: " + tmp.getType());
-		entry.add(businessType);
-		
-		JLabel businessRating = new JLabel("Rating: " + tmp.getRating());
-		entry.add(businessRating);
-		
-		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-		JLabel businessDate = new JLabel("Date established: " + dateFormat.format(tmp.getDate()));
-		entry.add(businessDate);
-		
-		JLabel businessExpense = new JLabel("Expense category: " + tmp.getExpense());
-		entry.add(businessExpense);
-		
-		JLabel businessContact = new JLabel("Contact information:  "  + tmp.getOwner()
-				+ "  -  " + tmp.getNumber());
-		entry.add(businessContact);
-	}
-	
-	public static void main(String[] args) {
-		GUI app = new GUI();
-		app.setSize(1024, 768);
-		app.setLocationRelativeTo(null);
-		app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		app.setVisible(true);
 	}
 }
