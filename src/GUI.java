@@ -16,10 +16,9 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
-public class GUI extends JFrame implements ActionListener {
+public class GUI extends JFrame{
 
-	private ArrayList<Business> catalogRecords = new ArrayList<Business>();
-	private JPanel mainPanel, functionPanel, userPanel, sortPanel, catalogPanel, catalogContainer;
+	private JPanel mainPanel, functionPanel, userPanel, sortPanel, catalogPanel;
 	private JScrollPane catalogScroll;
 	private JLabel sortLabel, searchLabel;
 	private JComboBox<String> sortReverse;
@@ -91,7 +90,6 @@ public class GUI extends JFrame implements ActionListener {
 		gc.weighty = 1;
 		gc.gridx = 0;
 		gc.gridy = 4;
-		searchButton.addActionListener(this);
 		functionPanel.add(searchButton, gc);
 		
 		sortLabel = new JLabel("Sort by: ");
@@ -105,16 +103,12 @@ public class GUI extends JFrame implements ActionListener {
 		
 		nameButton = new JRadioButton("Name");
 		nameButton.setActionCommand("Name");
-		nameButton.addActionListener(this);
 		dateButton = new JRadioButton("Date");
 		dateButton.setActionCommand("Date");
-		dateButton.addActionListener(this);
 		ratingButton = new JRadioButton("Rating");
 		ratingButton.setActionCommand("Rating");
-		ratingButton.addActionListener(this);
 		ownerButton = new JRadioButton("Owner");
 		ownerButton.setActionCommand("Owner");
-		ownerButton.addActionListener(this);
 		
 		sortButtons = new ButtonGroup();
 		sortButtons.add(nameButton);
@@ -142,14 +136,12 @@ public class GUI extends JFrame implements ActionListener {
 		sortPanel.add(ownerButton, gc);
 		
 		sortReverse = new JComboBox<String>();
-		sortReverse.setActionCommand("Reverse");
 		sortReverse.addItem("Ascending");
 		sortReverse.addItem("Descending");
 		gc = new GridBagConstraints();
 		gc.gridwidth = sortPanel.getWidth();
 		gc.gridx = 0;
 		gc.gridy = 2;
-		sortReverse.addActionListener(this);
 		sortPanel.add(sortReverse, gc);
 		
 		gc = new GridBagConstraints();
@@ -162,139 +154,55 @@ public class GUI extends JFrame implements ActionListener {
 		functionPanel.add(sortPanel, gc);
 		
 		addButton = new JButton("Add Business");
-		addButton.addActionListener(this);
 		gc = new GridBagConstraints();
 		gc.insets = new Insets(0, 0, 100, 4);
 		gc.weighty = 20;
 		gc.gridx = 0;
 		gc.gridy = 8;
 		functionPanel.add(addButton, gc);
-
-		loadData();
 		
 		container = new CatalogContainer();
+		container.getData("");
 		catalogScroll = new JScrollPane(container);
 		catalogScroll.getVerticalScrollBar().setUnitIncrement(20);
 		catalogPanel.add(catalogScroll, BorderLayout.CENTER);
-		container.loadBusinesses(catalogRecords);
 		catalogPanel.revalidate();
+		
+		EventHandler listener = new EventHandler();
+		searchButton.addActionListener(listener);
+		nameButton.addActionListener(listener);
+		dateButton.addActionListener(listener);
+		ownerButton.addActionListener(listener);
+		ratingButton.addActionListener(listener);
+		sortReverse.addActionListener(listener);
+		addButton.addActionListener(listener);
 		
 		add(mainPanel);
-	}	
+	}
 	
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if (e.getActionCommand().equals("Search")) {
-			String searchStr = searchText.getText().trim();
-			catalogRecords = search(searchStr);
-			container.refresh();
-			if (catalogRecords.isEmpty()) {
-				JLabel tmp = new JLabel("No such record in catalog!");
-				tmp.setFont(new Font("Arial", Font.BOLD, 20));
-				container.add(tmp);
-			} else {
-				container.loadBusinesses(catalogRecords);
-			}
-		} else if (e.getActionCommand().equals("Add Business")) {
-			AddBusinessFrame tmp = new AddBusinessFrame(catalogRecords, container);
-			tmp.setSize(640, 400);
-			tmp.setLocationRelativeTo(null);
-			tmp.setVisible(true);
-		} else if (sortButtons.getSelection().getActionCommand() != null){
-			String cmd = sortButtons.getSelection().getActionCommand();
-			boolean reversed = false;
-			if (sortReverse.getSelectedItem().equals("Descending")) reversed = true;
-			if (cmd.equals("Name")) {
-				nameSort(catalogRecords, reversed);
-				container.loadBusinesses(catalogRecords);
-			} else if (cmd.equals("Date")) {
-				dateSort(catalogRecords, reversed);
-				container.loadBusinesses(catalogRecords);
-			} else if (cmd.equals("Rating")) {
-				ratingSort(catalogRecords, reversed);
-				container.loadBusinesses(catalogRecords);
-			} else if (cmd.equals("Owner")) {
-				ownerSort(catalogRecords, reversed);
-				container.loadBusinesses(catalogRecords);
+	class EventHandler implements ActionListener {
+
+		public void actionPerformed(ActionEvent e) {
+			if (e.getSource() == searchButton) {
+				String searchStr = searchText.getText().trim();
+				container.getData(searchStr);
+				if (container.isEmpty()) {
+					JLabel tmp = new JLabel("No such record in catalog!");
+					tmp.setFont(new Font("Arial", Font.BOLD, 20));
+					container.add(tmp);
+				}
+			} else if (sortButtons.getSelection() != null) {
+				boolean reversed = false;
+				if (sortReverse.getSelectedItem().equals("Descending")) reversed = true;
+				String sortCat = sortButtons.getSelection().getActionCommand();
+				container.updateSort(sortCat, reversed);
+			} else if (e.getSource() == addButton) {
+				AddBusinessFrame tmp = new AddBusinessFrame(container);
+				tmp.setSize(640, 400);
+				tmp.setLocationRelativeTo(null);
+				tmp.setVisible(true);
 			}
 		}
 		
-		catalogPanel.revalidate();
-	}
-	
-	public void loadData() {
-		try {
-			cm = new ConnectionManager();
-			catalogRecords = cm.getData();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			cm.closeConnection();
-		}
-	}
-	
-	public ArrayList<Business> search(String searchStr) {
-		ArrayList<Business> ret = new ArrayList<Business>();
-		try {
-			cm = new ConnectionManager();
-			ret = cm.dbSearch(searchStr);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return ret;
-	}
-	
-	public void dateSort(ArrayList<Business> arr, boolean reverse) {
-		Collections.sort(arr, new Comparator<Business>() {
-			@Override
-			public int compare(Business o1, Business o2) {
-				if (!reverse) {
-					return o1.getDate().compareTo(o2.getDate());
-				} else {
-					return o2.getDate().compareTo(o1.getDate());
-				}
-			}
-		});
-	}
-	
-	public void nameSort(ArrayList<Business> arr, boolean reverse) {
-		Collections.sort(arr, new Comparator<Business>() {
-			@Override
-			public int compare(Business o1, Business o2) {
-				String o1Name = o1.getName().replaceAll("[^A-Za-z0-9 ]", "");
-				String o2Name = o2.getName().replaceAll("[^A-Za-z0-9 ]", "");
-				if (!reverse) {
-					return o1Name.compareTo(o2Name);
-				} else {
-					return o2Name.compareTo(o1Name);
-				}
-			}
-		});
-	}
-	
-	public void ratingSort(ArrayList<Business> arr, boolean reverse) {
-		Collections.sort(arr, new Comparator<Business>() {
-			@Override
-			public int compare(Business o1, Business o2) {
-				if (!reverse) {
-					return o2.getRating() - o1.getRating();
-				} else {
-					return o1.getRating() - o2.getRating();
-				}
-			}
-		});
-	}
-	
-	public void ownerSort(ArrayList<Business> arr, boolean reverse) {
-		Collections.sort(arr, new Comparator<Business>() {
-			@Override
-			public int compare(Business o1, Business o2) {
-				if (!reverse) {
-					return o1.getOwner().compareTo(o2.getOwner());
-				} else {
-					return o2.getOwner().compareTo(o1.getOwner());
-				}
-			}
-		});
 	}
 }

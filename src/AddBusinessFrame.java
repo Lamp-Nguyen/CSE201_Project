@@ -18,7 +18,6 @@ import org.jdatepicker.impl.*;
 
 public class AddBusinessFrame extends JDialog implements ActionListener {
 	
-	private ArrayList<Business> catalogRecords;
 	private JPanel mainPanel;
 	private JTextField nameText, typeText, ownerText, numberText;
 	private JComboBox<String> expenseBox;
@@ -28,7 +27,6 @@ public class AddBusinessFrame extends JDialog implements ActionListener {
 	private UtilDateModel model;
 	private JDatePanelImpl datePanel;
 	private JDatePickerImpl datePicker;
-	private ConnectionManager cm;
 	private CatalogContainer container;
 	
 	protected class DateLabelFormatter extends AbstractFormatter {
@@ -50,7 +48,7 @@ public class AddBusinessFrame extends JDialog implements ActionListener {
 	    }
 	}
 	
-	public AddBusinessFrame(ArrayList<Business> arr, CatalogContainer cc) {
+	public AddBusinessFrame(CatalogContainer cc) {
 		setTitle("Add your business");
 		
 		mainPanel = new JPanel(new GridBagLayout());
@@ -133,7 +131,6 @@ public class AddBusinessFrame extends JDialog implements ActionListener {
 		confirmButton.addActionListener(this);
 		mainPanel.add(confirmButton, gc);
 		
-		catalogRecords = arr;
 		container = cc;
 		
 		pack();
@@ -142,7 +139,7 @@ public class AddBusinessFrame extends JDialog implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getActionCommand().equals("Confirm")) {
+		if (e.getSource() == confirmButton) {
 			String name = nameText.getText().trim();
 			String date = datePicker.getJFormattedTextField().getText();
 			String expense = (String) expenseBox.getSelectedItem();
@@ -152,21 +149,17 @@ public class AddBusinessFrame extends JDialog implements ActionListener {
 			boolean valid = isValid(name, date, owner);
 			if (valid) {
 				try {
-					cm = new ConnectionManager();
-					boolean existingRec = cm.dbContains(name);
+					boolean existingRec = container.list.contains(name);
 					if (!existingRec) {
-						cm.addRecord(name, date, 0, expense, type, owner, number);
-						catalogRecords.add(new Business(name, date, 0, expense, type, owner, number));
-						container.loadBusinesses(catalogRecords);
+						container.list.addRecord(name, date, 0, expense, type, owner, number);
+						container.loadBusinesses();
+						JOptionPane.showMessageDialog(null, "Business added!");
+						dispose();
 					} else {
 						JOptionPane.showMessageDialog(null, "This is an existing business!");
 					}
 				} catch (Exception exc) {
 					exc.printStackTrace();
-				} finally {
-					JOptionPane.showMessageDialog(null, "Business added!");
-					cm.closeConnection();
-					dispose();
 				}
 			}
 		}

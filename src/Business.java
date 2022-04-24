@@ -93,10 +93,4 @@ public class Business {
 	public void setNumber(String number) {
 		this.number = number;
 	}
-
-	@Override
-	public String toString() {
-		return String.format("%s\t%s\t%d\t%s\t%s\t%s\t%s",
-				name, dateFormat.format(date), rating, expense, type, owner, number);
-	}
 }

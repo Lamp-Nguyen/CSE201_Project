@@ -40,74 +40,23 @@ public class ConnectionManager {
 		}
 	}
 	
-	public ArrayList<Business> getData() {
-		ArrayList<Business> ret = new ArrayList<Business>();
+	public ResultSet searchQuery(String query) {
 		try {
 			stm = con.createStatement();
-			String query = "SELECT * FROM businesses";
 			rs = stm.executeQuery(query);
-			while (rs.next()) {
-				String name = rs.getString("NAME");
-				String date = rs.getString("DATE");
-				int rating = rs.getInt("RATING");
-				String expense = rs.getString("EXPENSE");
-				String type = rs.getString("TYPE");
-				String owner = rs.getString("OWNER");
-				String number = rs.getString("NUMBER");
-				Business toAdd = new Business(name, date, rating, expense, type, owner, number);
-				ret.add(toAdd);
-			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return ret;
+		return rs;
 	}
 	
-	public ArrayList<Business> dbSearch(String searchStr) {
-		ArrayList<Business> ret = new ArrayList<Business>();
+	public void updateQuery(String query) {
 		try {
 			stm = con.createStatement();
-			String query = "SELECT * FROM businesses WHERE NAME LIKE '%" + searchStr + "%';";
-			rs = stm.executeQuery(query);
-			while (rs.next()) {
-				String name = rs.getString("NAME");
-				String date = rs.getString("DATE");
-				int rating = rs.getInt("RATING");
-				String expense = rs.getString("EXPENSE");
-				String type = rs.getString("TYPE");
-				String owner = rs.getString("OWNER");
-				String number = rs.getString("NUMBER");
-				Business toAdd = new Business(name, date, rating, expense, type, owner, number);
-				ret.add(toAdd);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return ret;
-	}
-	
-	public void addRecord(String name, String date, int rating, String expense, String type, String owner, String number) {
-		try {
-			stm = con.createStatement();
-			String query = "INSERT INTO businesses VALUES ('" + name + "', '" + date + "', " + rating + ", '" + expense
-					+ "', '" + type + "', '" + owner + "', '" + number + "')";
 			stm.executeUpdate(query);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-	
-	public boolean dbContains(String searchStr) {
-		boolean ret = true;
-		try {
-			stm = con.createStatement();
-			String query = "SELECT * FROM businesses WHERE NAME = '" + searchStr + "';";
-			rs = stm.executeQuery(query);
-			ret = rs.next();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return ret;
 	}
 
 }
