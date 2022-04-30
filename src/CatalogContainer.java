@@ -61,21 +61,29 @@ public class CatalogContainer extends JPanel {
 		entry.add(new JLabel(""));
 				
 		JLabel businessType = new JLabel("Type: " + b.getType());
+		businessType.setFont(new Font("Arial", Font.PLAIN, 14));
 		entry.add(businessType);
 		
 		JLabel businessRating = new JLabel("Rating: " + b.getRating());
+		businessRating.setFont(new Font("Arial", Font.PLAIN, 14));
 		entry.add(businessRating);
 		
 		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 		JLabel businessDate = new JLabel("Date established: " + dateFormat.format(b.getDate()));
+		businessDate.setFont(new Font("Arial", Font.PLAIN, 14));
 		entry.add(businessDate);
 		
 		JLabel businessExpense = new JLabel("Expense category: " + b.getExpense());
+		businessExpense.setFont(new Font("Arial", Font.PLAIN, 14));
 		entry.add(businessExpense);
 		
-		JLabel businessContact = new JLabel("Contact information:  "  + b.getOwner()
-				+ "  -  " + b.getNumber());
+		JLabel businessContact = new JLabel("Contact information:  "  + b.getOwner());
+		businessContact.setFont(new Font("Arial", Font.PLAIN, 14));
 		entry.add(businessContact);
+		
+		JLabel businessNum = new JLabel(b.getNumber());
+		businessNum.setFont(new Font("Arial", Font.PLAIN, 14));
+		entry.add(businessNum);
 	}
 	
 	public void refresh() {

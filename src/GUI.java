@@ -18,11 +18,12 @@ import javax.swing.border.TitledBorder;
 
 public class GUI extends JFrame{
 
-	private JPanel mainPanel, functionPanel, userPanel, sortPanel, catalogPanel;
+	private JPanel mainPanel, functionPanel, sortPanel, catalogPanel;
+	private UserPanel userPanel;
 	private JScrollPane catalogScroll;
 	private JLabel sortLabel, searchLabel;
 	private JComboBox<String> sortReverse;
-	private JButton searchButton, loginButton, signupButton, addButton;
+	private JButton searchButton, addButton;
 	private JRadioButton nameButton, dateButton, ratingButton, ownerButton;
 	private ButtonGroup sortButtons;
 	private JTextField searchText;
@@ -40,34 +41,14 @@ public class GUI extends JFrame{
 		functionPanel = new JPanel(new GridBagLayout());
 		mainPanel.add(functionPanel, BorderLayout.WEST);
 		
-		userPanel = new JPanel(new GridBagLayout());
-		userPanel.setBorder(new TitledBorder("User"));
-		
-		loginButton = new JButton("Login");
+		userPanel = new UserPanel();
 		gc = new GridBagConstraints();
-		gc.ipadx = 26;
-		gc.weighty = 7;
-		gc.gridx = 0;
-		gc.gridy = 0;
-		userPanel.add(loginButton, gc);
-
-		signupButton = new JButton("Sign up");
-		gc = new GridBagConstraints();
-		gc.anchor = GridBagConstraints.PAGE_START;
-		gc.ipadx = 15;
-		gc.weighty = 7;
-		gc.gridx = 0;
-		gc.gridy = 1;
-		userPanel.add(signupButton, gc);
-		
-		gc = new GridBagConstraints();
-		gc.ipady = 70;
-		gc.ipadx = 200;
 		gc.gridx = 0;
 		gc.gridy = 0;
 		functionPanel.add(userPanel, gc);
 		
 		searchLabel = new JLabel("Type business's name or owner's name: ");
+		searchLabel.setFont(new Font("Arial", Font.PLAIN, 14));
 		gc = new GridBagConstraints();
 		gc.anchor = GridBagConstraints.FIRST_LINE_START;
 		gc.insets = new Insets(90, 15, 0, 0);
@@ -93,6 +74,7 @@ public class GUI extends JFrame{
 		functionPanel.add(searchButton, gc);
 		
 		sortLabel = new JLabel("Sort by: ");
+		sortLabel.setFont(new Font("Arial", Font.PLAIN, 14));
 		gc = new GridBagConstraints();
 		gc.anchor = GridBagConstraints.FIRST_LINE_START;
 		gc.insets = new Insets(40, 15, 0, 0);
@@ -102,12 +84,16 @@ public class GUI extends JFrame{
 		functionPanel.add(sortLabel, gc);
 		
 		nameButton = new JRadioButton("Name");
+		nameButton.setFont(new Font("Arial", Font.PLAIN, 14));
 		nameButton.setActionCommand("Name");
 		dateButton = new JRadioButton("Date");
+		dateButton.setFont(new Font("Arial", Font.PLAIN, 14));
 		dateButton.setActionCommand("Date");
 		ratingButton = new JRadioButton("Rating");
+		ratingButton.setFont(new Font("Arial", Font.PLAIN, 14));
 		ratingButton.setActionCommand("Rating");
 		ownerButton = new JRadioButton("Owner");
+		ownerButton.setFont(new Font("Arial", Font.PLAIN, 14));
 		ownerButton.setActionCommand("Owner");
 		
 		sortButtons = new ButtonGroup();
@@ -197,10 +183,14 @@ public class GUI extends JFrame{
 				String sortCat = sortButtons.getSelection().getActionCommand();
 				container.updateSort(sortCat, reversed);
 			} else if (e.getSource() == addButton) {
-				AddBusinessFrame tmp = new AddBusinessFrame(container);
-				tmp.setSize(640, 400);
-				tmp.setLocationRelativeTo(null);
-				tmp.setVisible(true);
+				if (userPanel.getUser() != null) {
+					AddBusinessFrame tmp = new AddBusinessFrame(container);
+					tmp.setSize(640, 400);
+					tmp.setLocationRelativeTo(null);
+					tmp.setVisible(true);
+				} else {
+					JOptionPane.showMessageDialog(null, "Please login before using this feature!");
+				}
 			}
 		}
 		
