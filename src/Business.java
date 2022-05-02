@@ -1,13 +1,17 @@
 import java.util.Date;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-/*
- * Business object class
+/**
+ * Business object class. Contains the instance variables [name, date, rating,
+ * expense, type, owner, number], the default constructor as well as getters and
+ * setters for the instance variables.
+ * @author Lam_Nguyen
+ *
  */
 
 public class Business {
 	
+	//------------------------------------------------------------------- Instance variables
 	private static SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 	private String name;
 	private Date date;
@@ -17,17 +21,7 @@ public class Business {
 	private String owner;
 	private String number;
 	
-	public Business(String inputString) throws Exception {
-		String[] arr = inputString.split("\t");
-		this.name = arr[0].trim();
-		this.date = dateFormat.parse(arr[1].trim());
-		this.rating = Integer.valueOf(arr[2].trim());
-		this.expense = arr[3].trim();
-		this.type = arr[4].trim();
-		this.owner = arr[5].trim();
-		this.number = arr[6].trim();
-	}
-	
+	//------------------------------------------------------------------- Constructor
 	public Business(String name, String date, int rating, String expense, String type, String owner, String number) throws Exception {
 		this.name = name;
 		this.date = dateFormat.parse(date);
@@ -38,6 +32,7 @@ public class Business {
 		this.number = number;
 	}
 	
+	//------------------------------------------------------------------- Getters - Setters
 	public String getName() {
 		return name;
 	}

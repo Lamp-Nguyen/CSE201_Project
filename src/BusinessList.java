@@ -1,31 +1,57 @@
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+/**
+ * The working array list for the program that stores a list of Business objects. Contains methods
+ * for connecting to the database to make queries and sorting methods
+ * @author Lam_Nguyen
+ *
+ */
+
 public class BusinessList {
 
+	//------------------------------------------------------------------- Instance variables
 	private ArrayList<Business> data = null;
 	private ResultSet rs;
 	private ConnectionManager cm;
 	
+	//------------------------------------------------------------------- Constructor
 	public BusinessList() {
 		data = new ArrayList<Business>();
 	}
 
+	//------------------------------------------------------------------- Instance methods
+	/**
+	 * Returns the size of the array list
+	 * @return array list size
+	 */
 	public int size() {
 		return data.size();
 	}
 	
+	/**
+	 * Check if array list is empty
+	 * @return true if there is no records in the array list, false otherwise
+	 */
 	public boolean isEmpty() {
 		return data.isEmpty();
 	}
 	
+	/**
+	 * Convert the array list of businesses into an array
+	 * @return the array of businesses
+	 */
 	public Business[] dataArary() {
 		return data.toArray(new Business[data.size()]);
 	}
 	
+	/**
+	 * Get the records from the database that contains the search string and form a ResultSet.
+	 * Then create the business objects from the ResultSet and update the working list
+	 * @param searchStr
+	 */
 	public void getData(String searchStr) {
 		data = new ArrayList<Business>();
 		cm = new ConnectionManager();
@@ -50,7 +76,13 @@ public class BusinessList {
 		cm.closeConnection();
 	}
 	
-	
+	/**
+	 * Get the records from the database that has the searchStr as its business's name
+	 * and form a ResultSet. Check if the ResultSet is empty, which implies that there is
+	 * no record that has the searchStr as the name.
+	 * @param searchStr
+	 * @return true if the result set contains the record, false otherwise
+	 */
 	public boolean contains(String searchStr) {
 		boolean ret = true;
 		cm = new ConnectionManager();
@@ -66,6 +98,17 @@ public class BusinessList {
 		return ret;
 	}
 	
+	/**
+	 * Add a new record into the database. Create a new Business object from the parameters
+	 * and add it to the working array list
+	 * @param name the business's name
+	 * @param date the business's date
+	 * @param rating the business's rating
+	 * @param expense the business's expense type
+	 * @param type the business's type
+	 * @param owner the business's owner
+	 * @param number the business's number
+	 */
 	public void addRecord(String name, String date, int rating, String expense, String type, String owner, String number) {
 		cm = new ConnectionManager();
 		cm.getConnection();
@@ -80,6 +123,10 @@ public class BusinessList {
 		cm.closeConnection();
 	}
 	
+	/**
+	 * Sort the working array list by the business's date
+	 * @param reverse does the list needs to be sort in reverse
+	 */
 	public void dateSort(boolean reverse) {
 		Collections.sort(data, new Comparator<Business>() {
 			@Override
@@ -93,6 +140,10 @@ public class BusinessList {
 		});
 	}
 	
+	/**
+	 * Sort the working array list by the business's name
+	 * @param reverse does the list needs to be sort in reverse
+	 */
 	public void nameSort(boolean reverse) {
 		Collections.sort(data, new Comparator<Business>() {
 			@Override
@@ -108,6 +159,10 @@ public class BusinessList {
 		});
 	}
 	
+	/**
+	 * Sort the working array list by the business's rating
+	 * @param reverse does the list needs to be sort in reverse
+	 */
 	public void ratingSort(boolean reverse) {
 		Collections.sort(data, new Comparator<Business>() {
 			@Override
@@ -121,6 +176,10 @@ public class BusinessList {
 		});
 	}
 	
+	/**
+	 * Sort the working array list by the business's owner name
+	 * @param reverse does the list needs to be sort in reverse
+	 */
 	public void ownerSort(boolean reverse) {
 		Collections.sort(data, new Comparator<Business>() {
 			@Override

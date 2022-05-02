@@ -1,23 +1,27 @@
-import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Properties;
-
 import javax.swing.*;
 import javax.swing.JFormattedTextField.AbstractFormatter;
 import org.jdatepicker.impl.*;
 
+/**
+ * JDialog that pops up when the "Add business" button is clicked on, prompting the user
+ * to enter the necessary fields required to create a business. Contains a reference to the
+ * instance of the CatalogContainer class
+ * @author Lam_Nguyen
+ *
+ */
+
 public class AddBusinessFrame extends JDialog implements ActionListener {
 	
+	//------------------------------------------------------------------- Instance variables
 	private JPanel mainPanel;
 	private JTextField nameText, typeText, ownerText, numberText;
 	private JComboBox<String> expenseBox;
@@ -29,25 +33,7 @@ public class AddBusinessFrame extends JDialog implements ActionListener {
 	private JDatePickerImpl datePicker;
 	private CatalogContainer container;
 	
-	protected class DateLabelFormatter extends AbstractFormatter {
-	    private String datePattern = "MM/dd/yyyy";
-	    private SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
-
-	    @Override
-	    public Object stringToValue(String text) throws ParseException {
-	        return dateFormatter.parseObject(text);
-	    }
-
-	    @Override
-	    public String valueToString(Object value) throws ParseException {
-	        if (value != null) {
-	            Calendar cal = (Calendar) value;
-	            return dateFormatter.format(cal.getTime());
-	        }
-	        return "";
-	    }
-	}
-	
+	//------------------------------------------------------------------- Constructor
 	public AddBusinessFrame(CatalogContainer cc) {
 		setTitle("Add your business");
 		
@@ -59,6 +45,7 @@ public class AddBusinessFrame extends JDialog implements ActionListener {
 		gc.gridx = 0;
 		gc.gridy = 0;
 		
+		// Adding the labels
 		gc.anchor = GridBagConstraints.EAST;
 		gc.fill = GridBagConstraints.NONE;
 		nameLabel = new JLabel("Business's name: ");
@@ -79,6 +66,7 @@ public class AddBusinessFrame extends JDialog implements ActionListener {
 		numberLabel = new JLabel("Contact number: ");
 		mainPanel.add(numberLabel, gc);
 		
+		// Text field to enter name
 		gc = new GridBagConstraints();
 		gc.anchor = GridBagConstraints.WEST;
 		gc.fill = GridBagConstraints.NONE;
@@ -91,6 +79,11 @@ public class AddBusinessFrame extends JDialog implements ActionListener {
 		nameText.setColumns(30);
 		mainPanel.add(nameText, gc);
 		
+		/*
+		 * Initialize the date picking interface, which includes the JDatePanel
+		 * and JDatePicker dependencies added via the xml file
+		 * Source: https://jdatepicker.org/
+		 */
 		gc.gridy++;
 		model = new UtilDateModel();
 		Properties p = new Properties();
@@ -101,6 +94,7 @@ public class AddBusinessFrame extends JDialog implements ActionListener {
 		datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
 		mainPanel.add(datePicker, gc);
 		
+		// Combo box to select the business's expense type
 		gc.gridy++;
 		expenseBox = new JComboBox<String>();
 		expenseBox.addItem("Inexpensive");
@@ -108,37 +102,77 @@ public class AddBusinessFrame extends JDialog implements ActionListener {
 		expenseBox.addItem("Very Expensive");
 		mainPanel.add(expenseBox, gc);
 		gc.gridy++;
+		
+		// Text field to enter business's type
 		typeText = new JTextField("");
 		typeText.setColumns(30);
 		mainPanel.add(typeText, gc);
 		gc.gridy++;
+		
+		// Text field to enter business's owner 
 		ownerText = new JTextField("");
 		ownerText.setColumns(20);
 		mainPanel.add(ownerText, gc);
 		gc.gridy++;
+		
+		// Text field to enter business's contact number
 		numberText = new JTextField("");
 		numberText.setColumns(15);
 		mainPanel.add(numberText, gc);
 		
+		// Confirm button to add the business
 		gc = new GridBagConstraints();
 		gc.gridx = 0;
 		gc.weightx = 1;
 		gc.weighty = 2;
 		gc.gridy = 6;
-		
 		gc.gridwidth = mainPanel.getWidth();
 		confirmButton = new JButton("Confirm");
 		confirmButton.addActionListener(this);
 		mainPanel.add(confirmButton, gc);
 		
+		// Initialize the reference to the CatalogContainer object
 		container = cc;
 		
 		pack();
 		add(mainPanel);
 	}
 
+	//------------------------------------------------------------------- Instance methods
+	
+	/**
+	 * DateLabelFormatter to be used with the JDatePicker object
+	 * @author Lam_Nguyen
+	 *
+	 */
+	protected class DateLabelFormatter extends AbstractFormatter {
+	    private String datePattern = "MM/dd/yyyy";
+	    private SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
+
+	    @Override
+	    public Object stringToValue(String text) throws ParseException {
+	        return dateFormatter.parseObject(text);
+	    }
+
+	    @Override
+	    public String valueToString(Object value) throws ParseException {
+	        if (value != null) {
+	            Calendar cal = (Calendar) value;
+	            return dateFormatter.format(cal.getTime());
+	        }
+	        return "";
+	    }
+	}
+	
+	/**
+	 * ActionListener class.
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		/*
+		 * Action performed when the confirm button is clicked. The data entered into the fields
+		 * is used as parameters for the addRecord() method of the CatalogContainer object
+		 */
 		if (e.getSource() == confirmButton) {
 			String name = nameText.getText().trim();
 			String date = datePicker.getJFormattedTextField().getText();
@@ -165,6 +199,13 @@ public class AddBusinessFrame extends JDialog implements ActionListener {
 		}
 	}
 	
+	/**
+	 * Check if the business's name, date and owner are entered
+	 * @param name the business's name
+	 * @param date the business's established date
+	 * @param owner the business's owner
+	 * @return true if the three fields have data, false otherwise.
+	 */
 	private boolean isValid(String name, String date, String owner) {
 		if (name.equals("")) {
 			JOptionPane.showMessageDialog(null, "Please enter business's name!");

@@ -1,10 +1,11 @@
 import javax.swing.JFrame;
-import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+
+import com.formdev.flatlaf.FlatIntelliJLaf;
 
 public class MetaApp {
 	public static void main(String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
-		//UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+		FlatIntelliJLaf.setup();
 		GUI app = new GUI();
 		app.setSize(1024, 768);
 		app.setLocationRelativeTo(null);

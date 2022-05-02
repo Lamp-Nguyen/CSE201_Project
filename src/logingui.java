@@ -1,24 +1,24 @@
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+/**
+ * JDialog that pops up when the "Login" button is clicked. Prompt the user for their username
+ * and password. Contains a reference to the UserPanel instance.
+ * @author Lam_Nguyen
+ *
+ */
 public class logingui extends JDialog implements ActionListener{
 	
+	//------------------------------------------------------------------- Instance variables
 	private JLabel loginL, userL, passL, accL, notifyL;
 	private JTextField userT;
 	private JPasswordField passT;
@@ -26,6 +26,7 @@ public class logingui extends JDialog implements ActionListener{
 	private ConnectionManager cm;
 	private UserPanel userP;
 	
+	//------------------------------------------------------------------- Constructor
 	public logingui(UserPanel userP) {
 		JPanel p = new JPanel();
 		
@@ -72,13 +73,23 @@ public class logingui extends JDialog implements ActionListener{
 		p.add(loginB);
 		
 		this.userP = userP;
+		
 		add(p);
 		
 		p.setLayout(null);
 	}
 	
+	//------------------------------------------------------------------- Instance methods
+	/**
+	 * Action listener method
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		/*
+		 * ACtion performed when the log in button is clicked. Make a query to the database to fetch the
+		 * username. If the username is in the ResultSet and the password matches, the User object from UserPanel
+		 * is instantiated
+		 */
 		if (e.getSource() == loginB) {
 			String username = userT.getText().trim();
 			cm = new ConnectionManager();
@@ -90,11 +101,16 @@ public class logingui extends JDialog implements ActionListener{
 			String pass = new String(passT.getPassword());
 			
 			try {
+				/*
+				Check if there is a record in the ResultSet and call validatePassword to compare the text and
+				hashed password
+				*/
 				if (rs.next() && Hash.getInstance().validatePassword(pass, rs.getString("password"))) {
+					userP.setUser();
 					userP.getUser().setName(rs.getString("username"));		
 					userP.getUser().setRole(rs.getString("role"));
 					dispose();
-					
+					// If successul, change the UserPanel to the user view and update the display
 					userP.removeAll();
 					userP.userView();
 					userP.revalidate();

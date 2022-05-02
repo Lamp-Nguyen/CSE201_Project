@@ -3,18 +3,23 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+/**
+ * JDialog that pops up when the "Sign up" button is clicked. Prompt the user for their username
+ * , password and password confirmation
+ * @author Lam_Nguyen
+ *
+ */
 public class signupgui extends JDialog implements ActionListener{
 
+	//------------------------------------------------------------------- Instance variables
 	private JLabel signUpL, create, newUser, newPass, rePass, notify;
 	private JTextField textUser;
 	private JPasswordField textPass, textRePass;
@@ -22,6 +27,7 @@ public class signupgui extends JDialog implements ActionListener{
 	private ConnectionManager cm;
 	private User user;
 	
+	//------------------------------------------------------------------- Constructor
 	public signupgui(User user) {
 		JPanel p = new JPanel();
 		
@@ -83,6 +89,12 @@ public class signupgui extends JDialog implements ActionListener{
 		p.setLayout(null);
 	}
 
+	//------------------------------------------------------------------- Instance methods
+	/**
+	 * Make a query to the database to check if the username is already in use
+	 * @param username the username the user typed
+	 * @return true if the username already existed, false otherwise
+	 */
 	public boolean existingUser(String username) {
 		boolean ret = false;
 		cm = new ConnectionManager();
@@ -100,8 +112,16 @@ public class signupgui extends JDialog implements ActionListener{
 		return ret;
 	}
 	
+	/**
+	 * Action listener method 
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		/*
+		 * Action performed when the sign up button is clicked. Checks if the username is already in use
+		 * and compares the password and password confirmation. If they match, hash the password and insert
+		 * the username and password into the database 
+		 */
 		if (e.getSource() == signUpB) {
 			String pass = new String(textPass.getPassword());
 			String rePass = new String(textRePass.getPassword());
