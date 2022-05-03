@@ -15,9 +15,9 @@ public class ConnectionManager {
 	/*
 	 * Database's IP address, the root username and password
 	 */
-	private static String url = "jdbc:mysql://127.0.0.1:3306/cse201project";
+	private static String url = "jdbc:mysql:aws://cse201project.cl93exr6xql3.us-east-1.rds.amazonaws.com:3306/project";
 	private static String userName = "root";
-	private static String password = "CSE201_Project_Group17";
+	private static String password = "business+index";
 	
 	private Connection con = null;
 	private ResultSet rs;

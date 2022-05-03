@@ -95,7 +95,7 @@ public class logingui extends JDialog implements ActionListener{
 			cm = new ConnectionManager();
 			cm.getConnection();
 			
-			String query = "SELECT * FROM accounts WHERE username = '" + username + "';";
+			String query = "SELECT * FROM accounts WHERE USERNAME = '" + username + "';";
 			ResultSet rs = cm.searchQuery(query);
 			
 			String pass = new String(passT.getPassword());
@@ -105,10 +105,11 @@ public class logingui extends JDialog implements ActionListener{
 				Check if there is a record in the ResultSet and call validatePassword to compare the text and
 				hashed password
 				*/
-				if (rs.next() && Hash.getInstance().validatePassword(pass, rs.getString("password"))) {
+				if (rs.next() && Hash.getInstance().validatePassword(pass, rs.getString("PASSWORD"))) {
 					userP.setUser();
-					userP.getUser().setName(rs.getString("username"));		
-					userP.getUser().setRole(rs.getString("role"));
+					userP.getUser().setName(rs.getString("USERNAME"));		
+					userP.getUser().setRole(rs.getString("ROLE"));
+					cm.closeConnection();
 					dispose();
 					// If successul, change the UserPanel to the user view and update the display
 					userP.removeAll();
@@ -122,7 +123,6 @@ public class logingui extends JDialog implements ActionListener{
 			} catch (Exception exc) {
 				exc.printStackTrace();
 			}
-			cm.closeConnection();
 		}
 	}
 }

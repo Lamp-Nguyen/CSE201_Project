@@ -56,7 +56,7 @@ public class BusinessList {
 		data = new ArrayList<Business>();
 		cm = new ConnectionManager();
 		cm.getConnection();
-		String query = "SELECT * FROM businesses WHERE NAME LIKE '%" + searchStr + "%';";
+		String query = "SELECT * FROM business WHERE NAME LIKE '%" + searchStr + "%';";
 		rs = cm.searchQuery(query);
 		try {
 			while (rs.next()) {
@@ -87,7 +87,7 @@ public class BusinessList {
 		boolean ret = true;
 		cm = new ConnectionManager();
 		cm.getConnection();
-		String query = "SELECT * FROM businesses WHERE NAME = '" + searchStr + "';";
+		String query = "SELECT * FROM business WHERE NAME = '" + searchStr + "';";
 		rs = cm.searchQuery(query);
 		try {
 			ret = rs.next();
@@ -112,7 +112,7 @@ public class BusinessList {
 	public void addRecord(String name, String date, int rating, String expense, String type, String owner, String number) {
 		cm = new ConnectionManager();
 		cm.getConnection();
-		String query = "INSERT INTO businesses VALUES ('" + name + "', '" + date + "', " + rating + ", '" + expense
+		String query = "INSERT INTO business VALUES ('" + name + "', '" + date + "', " + rating + ", '" + expense
 				+ "', '" + type + "', '" + owner + "', '" + number + "')";
 		cm.updateQuery(query);
 		try {

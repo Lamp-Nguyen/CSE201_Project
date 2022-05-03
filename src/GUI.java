@@ -24,10 +24,11 @@ public class GUI extends JFrame{
 	private ButtonGroup sortButtons;
 	private CatalogContainer container;
 	private GridBagConstraints gc;
-	private ConnectionManager cm;
 	
 	//------------------------------------------------------------------- Constructor
 	public GUI() {
+		this.setTitle("Business+ Index");
+		
 		mainPanel = new JPanel(new BorderLayout());
 		
 		// Panel for the catalog container

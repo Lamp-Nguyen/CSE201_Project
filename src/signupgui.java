@@ -99,7 +99,7 @@ public class signupgui extends JDialog implements ActionListener{
 		boolean ret = false;
 		cm = new ConnectionManager();
 		cm.getConnection();
-		String query = "SELECT * FROM accounts WHERE username = '" + username + "';";
+		String query = "SELECT * FROM accounts WHERE USERNAME = '" + username + "';";
 		ResultSet rs = cm.searchQuery(query);
 		try {
 			if (rs.next())
@@ -130,15 +130,15 @@ public class signupgui extends JDialog implements ActionListener{
 			} else { 
 				if (rePass.equals(pass)) {
 					try {
-						String query = "INSERT INTO accounts(username, password, role) VALUES "
+						String query = "INSERT INTO accounts(USERNAME, PASSWORD, ROLE) VALUES "
 								+ "('" + textUser.getText().trim() + "', '" + Hash.getInstance().generateStrongPasswordHash(pass)
 								+ "', " + "'USER');"; 
 						cm = new ConnectionManager();
 						cm.getConnection();
 						cm.updateQuery(query);
 						JOptionPane.showMessageDialog(null, "Account created!");
-						dispose();
 						cm.closeConnection();
+						dispose();
 					} catch (Exception exc) {
 						exc.printStackTrace();
 					}
