@@ -56,7 +56,7 @@ public class GUI extends JFrame{
 		functionPanel.add(userPanel, gc);
 		
 		// Text field for searching
-		searchLabel = new JLabel("Type business's name or owner's name: ");
+		searchLabel = new JLabel("Type business's name: ");
 		searchLabel.setFont(new Font("Arial", Font.PLAIN, 14));
 		gc = new GridBagConstraints();
 		gc.anchor = GridBagConstraints.FIRST_LINE_START;
