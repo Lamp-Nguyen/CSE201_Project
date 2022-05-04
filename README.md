@@ -3,9 +3,9 @@
 This is the documentation for our product, Business+ Index. The application is a catalog of businesses that allows users to search for a specific and sort through the businesses in the records, as well as adding their own businesses.  
 
 ## Installation
-Make sure you have the latest version of JDK downloaded (preferably[ JDK 17.0.3](https://www.oracle.com/java/technologies/downloads/#java17)) before installing the and running the program.
+Make sure you have the latest version of JDK downloaded (preferably[ JDK 17.0.3](https://www.oracle.com/java/technologies/downloads/#java17)) before installing and running the program.
 
-The runnable JAR file for the application can be downloaded from this Google Drive [link](https://bit.ly/3y9mvdp). 
+The runnable JAR file for the application can be downloaded from this Google Drive [link](https://bit.ly/3w0RRAh). 
 
 ## User Instruction
 
